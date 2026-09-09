@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Infinite Fusions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1>Pokémon Infinite Fusions</h1>
+            <div class="player-stats">
+                <div class="stat">Level: <span id="playerLevel">1</span></div>
+                <div class="stat">Pokédex: <span id="pokedexCount">0</span></div>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div class="game-area">
+            <!-- Pokemon Collection -->
+            <section class="pokemon-collection">
+                <h2>Your Pokémon</h2>
+                <div class="pokemon-list" id="pokemonList"></div>
+            </section>
+
+            <!-- Fusion Interface -->
+            <section class="fusion-interface">
+                <h2>Fusion Center</h2>
+                <div class="fusion-controls">
+                    <div class="pokemon-selector">
+                        <label>Select Pokémon 1:</label>
+                        <select id="pokemon1Select" class="pokemon-select"></select>
+                    </div>
+                    <div class="pokemon-selector">
+                        <label>Select Pokémon 2:</label>
+                        <select id="pokemon2Select" class="pokemon-select"></select>
+                    </div>
+                    <div class="fusion-type-selector">
+                        <label>Fusion Type:</label>
+                        <div class="fusion-type-buttons">
+                            <button class="fusion-btn permanent-btn" data-type="permanent">
+                                Permanent Fusion
+                                <span class="fusion-info">(Harder, Cannot Undo)</span>
+                            </button>
+                            <button class="fusion-btn reversible-btn" data-type="reversible">
+                                Reversible Fusion
+                                <span class="fusion-info">(Can Undo)</span>
+                            </button>
+                        </div>
+                    </div>
+                    <button id="fusionBtn" class="action-btn">Perform Fusion</button>
+                </div>
+                <div id="fusionResult" class="fusion-result hidden"></div>
+            </section>
+
+            <!-- Breeding Interface -->
+            <section class="breeding-interface">
+                <h2>Breeding Center</h2>
+                <div class="breeding-controls">
+                    <div class="pokemon-selector">
+                        <label>Select Parent 1:</label>
+                        <select id="parent1Select" class="pokemon-select"></select>
+                    </div>
+                    <div class="pokemon-selector">
+                        <label>Select Parent 2:</label>
+                        <select id="parent2Select" class="pokemon-select"></select>
+                    </div>
+                    <button id="breedBtn" class="action-btn">Breed Pokémon</button>
+                </div>
+                <div id="breedResult" class="breed-result hidden"></div>
+            </section>
+
+            <!-- Unfusion Interface -->
+            <section class="unfusion-interface">
+                <h2>Unfusion Center</h2>
+                <div class="unfusion-controls">
+                    <div class="pokemon-selector">
+                        <label>Select Fused Pokémon:</label>
+                        <select id="fusedPokemonSelect" class="pokemon-select"></select>
+                    </div>
+                    <button id="unfusionBtn" class="action-btn">Undo Fusion</button>
+                </div>
+                <div id="unfusionResult" class="unfusion-result hidden"></div>
+            </section>
+        </div>
+
+        <!-- Pokemon Details Modal -->
+        <div id="pokemonModal" class="modal hidden">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <div id="pokemonDetails"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="pokemon-data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
