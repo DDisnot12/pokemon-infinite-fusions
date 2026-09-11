@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon Infinite Fusions - Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .game-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .player-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1em;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .game-area {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+        }
+
+        section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+        }
+
+        section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .exploration-area {
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .grass-tiles {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grass-tile {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            padding: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .grass-tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .grass-tile:active {
+            transform: scale(0.98);
+        }
+
+        .encounter-box {
+            background: white;
+            border: 2px solid #f39c12;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .encounter-box.active {
+            display: block;
+        }
+
+        .pokemon-display {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .pokemon-sprite {
+            font-size: 4em;
+            margin: 10px 0;
+        }
+
+        .pokemon-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .catch-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .catch-btn {
+            padding: 15px;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .catch-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .catch-btn.run {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .pokemon-collection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .pokemon-card {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .pokemon-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .pokemon-card.fused {
+            background: linear-gradient(135deg, #fffb96 0%, #f39c12 100%);
+            border-color: #f39c12;
+        }
+
+        .pokemon-name {
+            font-weight: bold;
+            font-size: 0.8em;
+            color: #333;
+        }
+
+        .pokemon-level {
+            font-size: 0.7em;
+            color: #666;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .selector-group label {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        select {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .action-btn {
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result {
+            background: white;
+            border-left: 5px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.success {
+            border-left-color: #27ae60;
+            background: #d4edda;
+        }
+
+        .result.error {
+            border-left-color: #e74c3c;
+            background: #f8d7da;
+        }
+
+        .fusion-type-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .fusion-btn {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.85em;
+        }
+
+        .fusion-btn.permanent-btn {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .fusion-btn.permanent-btn.active {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .fusion-btn.reversible-btn {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .fusion-btn.reversible-btn.active {
+            background: #27ae60;
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grass-tiles {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .game-header h1 {
+                font-size: 1.5em;
+            }
+            
+            .player-stats {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>🔷 Pokémon Infinite Fusions: Adventure 🔷</h1>
+            <div class="player-stats">
+                <div class="stat">Level: <span id="playerLevel">1</span></div>
+                <div class="stat">Caught: <span id="caughtCount">0</span></div>
+                <div class="stat">Pokéballs: <span id="pokeballs">10</span></div>
+            </div>
+        </header>
+
+        <div class="game-area">
+            <div class="main-content">
+                <!-- Exploration Section -->
+                <section>
+                    <h2>🌿 Explore</h2>
+                    <div class="exploration-area">
+                        <p style="margin-bottom: 15px; font-weight: bold;">Click on the grass to find Pokémon!</p>
+                        <div class="grass-tiles">
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                            <div class="grass-tile" onclick="explore()">🌾</div>
+                        </div>
+                        <div class="encounter-box" id="encounterBox">
+                            <div class="pokemon-display">
+                                <div style="font-size: 0.9em; color: #666; margin-bottom: 10px;">A wild Pokémon appeared!</div>
+                                <div class="pokemon-sprite" id="pokemonSprite">🔷</div>
+                                <div class="pokemon-info">
+                                    <strong id="pokemonName">Pokémon</strong><br>
+                                    <small>Level <span id="pokemonLevel">1</span></small>
+                                </div>
+                            </div>
+                            <div class="catch-buttons">
+                                <button class="catch-btn" onclick="throwPokeball()">⚽ Catch</button>
+                                <button class="catch-btn run" onclick="runAway()">🏃 Run</button>
+                            </div>
+                            <div class="message" id="catchMessage"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Fusion Section -->
+                <section>
+                    <h2>🔀 Fusion Center</h2>
+                    <div class="controls">
+                        <div class="selector-group">
+                            <label>Pokémon 1:</label>
+                            <select id="pokemon1Select"></select>
+                        </div>
+                        <div class="selector-group">
+                            <label>Pokémon 2:</label>
+                            <select id="pokemon2Select"></select>
+                        </div>
+                        <div class="selector-group">
+                            <label>Fusion Type:</label>
+                            <div class="fusion-type-buttons">
+                                <button class="fusion-btn permanent-btn active" data-type="permanent">🔒 Permanent</button>
+                                <button class="fusion-btn reversible-btn" data-type="reversible">🔄 Reversible</button>
+                            </div>
+                        </div>
+                        <button class="action-btn" onclick="performFusion()">Perform Fusion</button>
+                    </div>
+                    <div id="fusionResult" class="result"></div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <div>
+                <!-- Collection Section -->
+                <section style="grid-column: 1;">
+                    <h2>📚 My Collection</h2>
+                    <div id="collectionCount" style="margin-bottom: 10px; font-weight: bold; color: #667eea;"></div>
+                    <div class="pokemon-collection" id="pokemonCollection"></div>
+                </section>
+
+                <!-- Breeding Section -->
+                <section style="grid-column: 1;">
+                    <h2>🥚 Breeding Center</h2>
+                    <div class="controls">
+                        <div class="selector-group">
+                            <label>Parent 1:</label>
+                            <select id="parent1Select"></select>
+                        </div>
+                        <div class="selector-group">
+                            <label>Parent 2:</label>
+                            <select id="parent2Select"></select>
+                        </div>
+                        <button class="action-btn" onclick="performBreeding()">Breed</button>
+                    </div>
+                    <div id="breedResult" class="result"></div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pokémon Data
+        const allPokemon = [
+            { id: 1, name: 'Bulbasaur', type: ['Grass', 'Poison'], stats: { hp: 45, attack: 49, defense: 49 }, catchRate: 45, emoji: '🌿' },
+            { id: 2, name: 'Ivysaur', type: ['Grass', 'Poison'], stats: { hp: 60, attack: 62, defense: 63 }, catchRate: 45, emoji: '🌱' },
+            { id: 3, name: 'Venusaur', type: ['Grass', 'Poison'], stats: { hp: 80, attack: 82, defense: 83 }, catchRate: 45, emoji: '🌻' },
+            { id: 4, name: 'Charmander', type: ['Fire'], stats: { hp: 39, attack: 52, defense: 43 }, catchRate: 45, emoji: '🔥' },
+            { id: 5, name: 'Charmeleon', type: ['Fire'], stats: { hp: 58, attack: 64, defense: 58 }, catchRate: 45, emoji: '🔥' },
+            { id: 6, name: 'Charizard', type: ['Fire', 'Flying'], stats: { hp: 78, attack: 84, defense: 78 }, catchRate: 45, emoji: '🐉' },
+            { id: 7, name: 'Squirtle', type: ['Water'], stats: { hp: 44, attack: 48, defense: 65 }, catchRate: 45, emoji: '🐢' },
+            { id: 8, name: 'Wartortle', type: ['Water'], stats: { hp: 59, attack: 63, defense: 80 }, catchRate: 45, emoji: '🐢' },
+            { id: 9, name: 'Blastoise', type: ['Water'], stats: { hp: 79, attack: 83, defense: 100 }, catchRate: 45, emoji: '💧' },
+            { id: 10, name: 'Caterpie', type: ['Bug'], stats: { hp: 45, attack: 52, defense: 43 }, catchRate: 255, emoji: '🐛' },
+            { id: 25, name: 'Pikachu', type: ['Electric'], stats: { hp: 35, attack: 55, defense: 40 }, catchRate: 190, emoji: '⚡' },
+            { id: 26, name: 'Raichu', type: ['Electric'], stats: { hp: 60, attack: 90, defense: 55 }, catchRate: 75, emoji: '⚡' },
+            { id: 29, name: 'Nidoran♀', type: ['Poison'], stats: { hp: 55, attack: 47, defense: 52 }, catchRate: 235, emoji: '🔷' },
+            { id: 35, name: 'Clefairy', type: ['Fairy'], stats: { hp: 35, attack: 48, defense: 46 }, catchRate: 150, emoji: '✨' },
+            { id: 39, name: 'Jigglypuff', type: ['Fairy'], stats: { hp: 115, attack: 40, defense: 20 }, catchRate: 170, emoji: '🎤' },
+            { id: 50, name: 'Diglett', type: ['Ground'], stats: { hp: 10, attack: 55, defense: 25 }, catchRate: 255, emoji: '🕳️' },
+            { id: 54, name: 'Psyduck', type: ['Water'], stats: { hp: 50, attack: 52, defense: 48 }, catchRate: 190, emoji: '🦆' },
+            { id: 58, name: 'Growlithe', type: ['Fire'], stats: { hp: 55, attack: 70, defense: 45 }, catchRate: 190, emoji: '🐕' },
+            { id: 60, name: 'Poliwag', type: ['Water'], stats: { hp: 40, attack: 50, defense: 40 }, catchRate: 255, emoji: '🐸' },
+            { id: 63, name: 'Abra', type: ['Psychic'], stats: { hp: 25, attack: 20, defense: 15 }, catchRate: 200, emoji: '🧙' },
+        ];
+
+        // Game State
+        let caughtPokemon = [];
+        let selectedFusionType = 'permanent';
+        let currentEncounter = null;
+        let pokeballs = 10;
+        let nextId = 1000;
+
+        // Initialize
+        function init() {
+            setupFusionButtons();
+            updateUI();
+        }
+
+        // Explore - Find Pokemon
+        function explore() {
+            if (pokeballs <= 0) {
+                alert('No Pokéballs left! You need to catch Pokémon to get more.');
+                return;
+            }
+
+            const randomPoke = allPokemon[Math.floor(Math.random() * allPokemon.length)];
+            const level = Math.floor(Math.random() * 15) + 2;
+            
+            currentEncounter = {
+                ...randomPoke,
+                level: level,
+                instanceId: Math.random()
+            };
+
+            document.getElementById('pokemonSprite').textContent = currentEncounter.emoji;
+            document.getElementById('pokemonName').textContent = currentEncounter.name;
+            document.getElementById('pokemonLevel').textContent = currentEncounter.level;
+            document.getElementById('encounterBox').classList.add('active');
+            document.getElementById('catchMessage').classList.remove('show', 'error', 'success');
+        }
+
+        // Throw Pokéball
+        function throwPokeball() {
+            if (!currentEncounter) return;
+
+            pokeballs--;
+            document.getElementById('pokeballs').textContent = pokeballs;
+
+            // Calculate catch chance
+            const catchChance = currentEncounter.catchRate / 255;
+            const catchBonus = Math.random() < 0.3 ? 0.2 : 0; // 30% chance of bonus
+            const success = Math.random() < (catchChance + catchBonus);
+
+            const msg = document.getElementById('catchMessage');
+            msg.classList.add('show');
+
+            if (success) {
+                const caughtPoke = {
+                    ...currentEncounter,
+                    id: nextId++,
+                    isFused: false,
+                    fusionType: null,
+                    originalParents: null
+                };
+
+                caughtPokemon.push(caughtPoke);
+                msg.classList.add('success');
+                msg.textContent = `✅ Caught ${currentEncounter.name}!`;
+                
+                setTimeout(() => {
+                    document.getElementById('encounterBox').classList.remove('active');
+                    updateUI();
+                }, 2000);
+            } else {
+                msg.classList.add('error');
+                msg.textContent = `❌ ${currentEncounter.name} broke free!`;
+            }
+        }
+
+        // Run Away
+        function runAway() {
+            document.getElementById('encounterBox').classList.remove('active');
+            currentEncounter = null;
+        }
+
+        // Setup Fusion Type Buttons
+        function setupFusionButtons() {
+            document.querySelectorAll('.fusion-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.fusion-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedFusionType = btn.dataset.type;
+                });
+            });
+        }
+
+        // Perform Fusion
+        function performFusion() {
+            const p1Id = parseInt(document.getElementById('pokemon1Select').value);
+            const p2Id = parseInt(document.getElementById('pokemon2Select').value);
+
+            if (!p1Id || !p2Id) {
+                showResult('fusionResult', 'error', 'Select two Pokémon!');
+                return;
+            }
+
+            const p1 = caughtPokemon.find(p => p.id === p1Id);
+            const p2 = caughtPokemon.find(p => p.id === p2Id);
+
+            const fused = {
+                id: nextId++,
+                name: p1.name + p2.name,
+                level: Math.max(p1.level, p2.level),
+                type: [...new Set([...p1.type, ...p2.type])].slice(0, 2),
+                stats: {
+                    hp: Math.floor((p1.stats.hp + p2.stats.hp) / 2 * 1.1),
+                    attack: Math.floor((p1.stats.attack + p2.stats.attack) / 2 * 1.1),
+                    defense: Math.floor((p1.stats.defense + p2.stats.defense) / 2 * 1.1)
+                },
+                emoji: '⭐',
+                isFused: true,
+                fusionType: selectedFusionType,
+                originalParents: selectedFusionType === 'reversible' ? { p1, p2 } : null
+            };
+
+            if (selectedFusionType === 'permanent') {
+                caughtPokemon = caughtPokemon.filter(p => p.id !== p1Id && p.id !== p2Id);
+            }
+
+            caughtPokemon.push(fused);
+            updateUI();
+            showResult('fusionResult', 'success', `Created ${fused.name}! (${selectedFusionType})`);
+            document.getElementById('pokemon1Select').value = '';
+            document.getElementById('pokemon2Select').value = '';
+        }
+
+        // Perform Breeding
+        function performBreeding() {
+            const p1Id = parseInt(document.getElementById('parent1Select').value);
+            const p2Id = parseInt(document.getElementById('parent2Select').value);
+
+            if (!p1Id || !p2Id) {
+                showResult('breedResult', 'error', 'Select two parents!');
+                return;
+            }
+
+            const p1 = caughtPokemon.find(p => p.id === p1Id);
+            const p2 = caughtPokemon.find(p => p.id === p2Id);
+
+            const baby = {
+                id: nextId++,
+                name: p1.name + ' (Baby)',
+                level: 1,
+                type: Math.random() > 0.5 ? p1.type : p2.type,
+                stats: {
+                    hp: Math.floor((p1.stats.hp + p2.stats.hp) / 2),
+                    attack: Math.floor((p1.stats.attack + p2.stats.attack) / 2),
+                    defense: Math.floor((p1.stats.defense + p2.stats.defense) / 2)
+                },
+                emoji: p1.emoji,
+                isFused: false,
+                fusionType: null,
+                originalParents: null
+            };
+
+            caughtPokemon.push(baby);
+            pokeballs += 2; // Gain pokéballs when breeding
+            updateUI();
+            showResult('breedResult', 'success', `Baby ${baby.name} born! +2 Pokéballs`);
+            document.getElementById('parent1Select').value = '';
+            document.getElementById('parent2Select').value = '';
+        }
+
+        // Update UI
+        function updateUI() {
+            updateCollection();
+            updateSelects();
+            document.getElementById('caughtCount').textContent = caughtPokemon.length;
+        }
+
+        function updateCollection() {
+            const collection = document.getElementById('pokemonCollection');
+            collection.innerHTML = '';
+            document.getElementById('collectionCount').textContent = `Total: ${caughtPokemon.length}`;
+
+            caughtPokemon.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'pokemon-card' + (p.isFused ? ' fused' : '');
+                card.innerHTML = `
+                    <div style="font-size: 1.5em;">${p.emoji}</div>
+                    <div class="pokemon-name">${p.name}</div>
+                    <div class="pokemon-level">Lv.${p.level}</div>
+                `;
+                card.onclick = () => showPokemonDetails(p);
+                collection.appendChild(card);
+            });
+        }
+
+        function updateSelects() {
+            [
+                { id: 'pokemon1Select' },
+                { id: 'pokemon2Select' },
+                { id: 'parent1Select' },
+                { id: 'parent2Select' }
+            ].forEach(sel => {
+                const select = document.getElementById(sel.id);
+                select.innerHTML = '<option value="">Select...</option>';
+                caughtPokemon.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = `${p.name} (Lv.${p.level})`;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function showPokemonDetails(p) {
+            alert(`${p.emoji} ${p.name}\nLevel: ${p.level}\nType: ${p.type.join('/')}\nHP: ${p.stats.hp}\nATK: ${p.stats.attack}\nDEF: ${p.stats.defense}`);
+        }
+
+        function showResult(elementId, type, message) {
+            const result = document.getElementById(elementId);
+            result.className = `result show ${type}`;
+            result.innerHTML = `<strong>${message}</strong>`;
+            setTimeout(() => result.classList.remove('show'), 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
